@@ -11,6 +11,8 @@ public class GenerateGrid : MonoBehaviour
     [Range(1,13)]
     public int pairCount;
 
+    public List<Sprite> _tileImages = new List<Sprite>();
+
     private List<int> _selectedTiles = new List<int>();
     private List<TileScript> _selectedTileScripts = new List<TileScript>();
 
@@ -27,7 +29,7 @@ public class GenerateGrid : MonoBehaviour
     {
         for (int c = 0; c < 2; c++)
         {
-            for (int i=0; i < pairCount; i++)
+            for (int i=1; i < pairCount+1; i++)
             {
                 //Spawns new tile from prefab
                 GameObject newTile = Instantiate(tilePrefab);
@@ -60,7 +62,6 @@ public class GenerateGrid : MonoBehaviour
         {
             if (_selectedTiles[0] == _selectedTiles[1])
             {
-                Debug.Log("Match");
                 foreach (TileScript tS in _selectedTileScripts)
                 {
                     tS.CompleteTile();
@@ -70,7 +71,6 @@ public class GenerateGrid : MonoBehaviour
             {
                 foreach (TileScript tS in _selectedTileScripts)
                 {
-                    Debug.Log(tS.GetTileID());
                     StartCoroutine(WaitForReset(tS));
                 }
             }
@@ -78,12 +78,11 @@ public class GenerateGrid : MonoBehaviour
             _selectedTileScripts.Clear();
         }
     }
-
+    
     IEnumerator WaitForReset(TileScript toReset)
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.25f);
         toReset.ResetTile();
-
     }
 
     //Function that removes tile from list, currently set to just clear since it's only pair matching

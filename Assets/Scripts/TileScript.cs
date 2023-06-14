@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,6 +11,8 @@ public class TileScript : MonoBehaviour
     private int _tileID;
     private bool _bIsFlipped = false;
     private static readonly int Color1 = Shader.PropertyToID("_Color");
+
+    private GenerateGrid _parentGrid;
 
     #region Setup via GenerateGrid
     public void SetTileID(int inID)
@@ -25,6 +28,13 @@ public class TileScript : MonoBehaviour
     void Start()
     {
         this.GetComponent<Button>().onClick.AddListener(FlipTile);
+        StartCoroutine(LateStart());
+    }
+
+    IEnumerator LateStart()
+    {
+        yield return new WaitForSeconds(.001f);
+        _parentGrid = this.GetComponentInParent<GenerateGrid>();
         SetText(" ");
     }
 
@@ -33,13 +43,13 @@ public class TileScript : MonoBehaviour
         if (_bIsFlipped)
         {
             ResetTile();
-            this.GetComponentInParent<GenerateGrid>().RemoveTile();
+            _parentGrid.RemoveTile();
         }
         else
         {
             SetText(_tileID.ToString());
             _bIsFlipped = true;
-            this.GetComponentInParent<GenerateGrid>().CheckFlippedTile(_tileID, this);
+            _parentGrid.CheckFlippedTile(_tileID, this);
         }
     }
 
@@ -53,11 +63,30 @@ public class TileScript : MonoBehaviour
     {
         this.GetComponent<Button>().onClick.RemoveAllListeners();
         // This changes all prefabs color instead of just instance
-        //this.gameObject.GetComponent<Image>().material.SetColor(Color1, Color.blue);
+        this.gameObject.GetComponent<Image>().color = (Color.green);
     }
-
+    
+    
     private void SetText(string toSet)
     {
         this.GetComponentInChildren<TMP_Text>().SetText(toSet);
+        //SetImage();
     }
+
+    /*Function that updates image to reflect if flipped or not
+    private void SetImage()
+    {
+        if (_parentGrid)
+        {
+            if (_bIsFlipped)
+            {
+                this.GetComponentInChildren<Image>().sprite = _parentGrid._tileImages[0];
+            }
+            else
+            {
+                this.GetComponentInChildren<Image>().sprite = _parentGrid._tileImages[_tileID];
+            }
+        }
+    }
+    */
 }
