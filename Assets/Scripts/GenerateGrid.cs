@@ -3,18 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = System.Random;
 
 public class GenerateGrid : MonoBehaviour
 {
-    [Range(1,13)]
+    [Range(1,10)]
     public int pairCount;
 
-    public List<Sprite> _tileImages = new List<Sprite>();
+    public List<Sprite> tileImages = new List<Sprite>();
 
     private List<int> _selectedTiles = new List<int>();
     private List<TileScript> _selectedTileScripts = new List<TileScript>();
+
+    private int _pairsCompleted = 0;
 
     public GameObject tilePrefab;
 
@@ -66,10 +69,17 @@ public class GenerateGrid : MonoBehaviour
                 {
                     tS.CompleteTile();
                 }
+                
+                //Increments pairs complete and checks if victory
+                _pairsCompleted++;
+                if (_pairsCompleted == pairCount)
+                {
+                    GetComponentInParent<UIScript>().GameOver(true);
+                }
             }
             else
             {
-                foreach (TileScript tS in _selectedTileScripts)
+                foreach (var tS in _selectedTileScripts)
                 {
                     StartCoroutine(WaitForReset(tS));
                 }
