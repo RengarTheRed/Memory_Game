@@ -18,6 +18,11 @@ public class GenerateGrid : MonoBehaviour
     private List<TileScript> _selectedTileScripts = new List<TileScript>();
 
     private int _pairsCompleted = 0;
+    
+    private int _playerTurn = 1;
+    private List<int> _playerScores = new List<int>{0,0};
+    public List<TMP_Text> playerScoreText;
+    public List<Image> playerScoreBorder;
 
     public GameObject tilePrefab;
 
@@ -25,6 +30,11 @@ public class GenerateGrid : MonoBehaviour
     {
         GenerateTiles();
         ShuffleTiles();
+        foreach (TMP_Text toSet in playerScoreText)
+        {
+            toSet.SetText("0");
+        }
+        ChangePlayerTurn();
     }
     
     //Function that generates tiles based on pair count, 2x since pair for each
@@ -69,6 +79,7 @@ public class GenerateGrid : MonoBehaviour
                 {
                     tS.CompleteTile();
                 }
+                UpdatePlayerScores(3);
                 
                 //Increments pairs complete and checks if victory
                 _pairsCompleted++;
@@ -83,12 +94,35 @@ public class GenerateGrid : MonoBehaviour
                 {
                     StartCoroutine(WaitForReset(tS));
                 }
+                UpdatePlayerScores(-2);
             }
             _selectedTiles.Clear();
             _selectedTileScripts.Clear();
+            
+            ChangePlayerTurn();
         }
     }
-    
+
+    private void ChangePlayerTurn()
+    {
+        playerScoreBorder[_playerTurn].color = (Color.white);
+        //Changes player turn on move commit
+        if (_playerTurn == 0)
+        {
+            _playerTurn = 1;
+        }
+        else
+        {
+            _playerTurn = 0;
+        }
+        playerScoreBorder[_playerTurn].color = (Color.yellow);
+    }
+    private void UpdatePlayerScores(int toAdd)
+    {
+        _playerScores[_playerTurn] +=toAdd;
+        playerScoreText[_playerTurn].SetText(_playerScores[_playerTurn].ToString());
+    }
+
     IEnumerator WaitForReset(TileScript toReset)
     {
         yield return new WaitForSeconds(.25f);

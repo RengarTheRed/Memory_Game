@@ -41,7 +41,7 @@ public class UIScript : MonoBehaviour
                 _bTimerActive = false;
                 TimerEnded();
             }
-            timerText.SetText(_currTimer.ToString("n2"));
+            timerText.SetText(_currTimer.ToString("n0"));
         }
     }
 
