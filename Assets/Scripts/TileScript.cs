@@ -10,8 +10,6 @@ public class TileScript : MonoBehaviour
 {
     private int _tileID;
     private bool _bIsFlipped = false;
-    private static readonly int Color1 = Shader.PropertyToID("_Color");
-
     private GenerateGrid _parentGrid;
 
     #region Setup via GenerateGrid
@@ -25,12 +23,14 @@ public class TileScript : MonoBehaviour
         return _tileID;
     }
     #endregion'
+    
     void Start()
     {
         this.GetComponent<Button>().onClick.AddListener(FlipTile);
         StartCoroutine(LateStart());
     }
 
+    //Function used to get parent object script since ref'd multiple times
     IEnumerator LateStart()
     {
         yield return new WaitForSeconds(.001f);
@@ -38,6 +38,7 @@ public class TileScript : MonoBehaviour
         SetText(" ");
     }
 
+    //Function for flipping tile
     private void FlipTile()
     {
         if (_bIsFlipped)
@@ -66,27 +67,8 @@ public class TileScript : MonoBehaviour
         this.gameObject.GetComponent<Image>().color = (Color.green);
     }
     
-    
     private void SetText(string toSet)
     {
         this.GetComponentInChildren<TMP_Text>().SetText(toSet);
-        //SetImage();
     }
-
-    /*Function that updates image to reflect if flipped or not
-    private void SetImage()
-    {
-        if (_parentGrid)
-        {
-            if (_bIsFlipped)
-            {
-                this.GetComponentInChildren<Image>().sprite = _parentGrid._tileImages[0];
-            }
-            else
-            {
-                this.GetComponentInChildren<Image>().sprite = _parentGrid._tileImages[_tileID];
-            }
-        }
-    }
-    */
 }
